@@ -16,3 +16,11 @@ local.properties
 /build/
 /.idea/
 /.gradle/
+/.idea/
+/gradlew.bat
+/local.properties
+/.gradle/
+/app/build/
+/gradle/
+/gradlew
+/build/
