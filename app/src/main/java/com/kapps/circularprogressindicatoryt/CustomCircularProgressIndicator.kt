@@ -41,8 +41,6 @@ fun CustomCircularProgressIndicator(
         mutableStateOf(initialValue)
     }
 
-    
-
     Box(
         modifier = modifier
     ){
@@ -77,9 +75,11 @@ fun CustomCircularProgressIndicator(
                 center = circleCenter
             )
 
+            val startAngle = 270f
+
             drawArc(
                 color = primaryColor,
-                startAngle = 90f,
+                startAngle = startAngle,
                 sweepAngle = (360f/maxValue) * positionValue.toFloat(),
                 style = Stroke(
                     width = circleThickness,
@@ -101,20 +101,23 @@ fun CustomCircularProgressIndicator(
             val gap = 15f
             for (i in 0 .. (maxValue-minValue)){
                 val color = if(i < positionValue-minValue) primaryColor else primaryColor.copy(alpha = 0.3f)
-                val angleInDegrees = i*360f/(maxValue-minValue).toFloat()
-                val angleInRad = angleInDegrees * PI / 180f + PI/2f
 
-                val yGapAdjustment = cos(angleInDegrees * PI / 180f)*gap
-                val xGapAdjustment = -sin(angleInDegrees * PI / 180f)*gap
+                val angleInDegrees = i*360f/(maxValue-minValue).toFloat()
+
+                val xGapAdjustment = sin(angleInDegrees * PI / 180f)*gap
+                val yGapAdjustment = -cos(angleInDegrees * PI / 180f)*gap
+
+
+                val angleInRad = angleInDegrees * PI / 180f - (PI/2)
 
                 val start = Offset(
-                    x = (outerRadius * cos(angleInRad) + circleCenter.x + xGapAdjustment).toFloat(),
-                    y = (outerRadius * sin(angleInRad) + circleCenter.y + yGapAdjustment).toFloat()
+                    x = (circleCenter.x + (outerRadius * cos(angleInRad)) + xGapAdjustment).toFloat(),
+                    y = (circleCenter.y + (outerRadius * sin(angleInRad)) + yGapAdjustment).toFloat()
                 )
 
                 val end = Offset(
-                    x = (outerRadius * cos(angleInRad) + circleCenter.x + xGapAdjustment).toFloat(),
-                    y = (outerRadius * sin(angleInRad) + circleThickness + circleCenter.y + yGapAdjustment).toFloat()
+                    x = (circleCenter.x + (outerRadius * cos(angleInRad)) + xGapAdjustment).toFloat(),
+                    y = (circleCenter.y + (outerRadius * sin(angleInRad)) + yGapAdjustment - circleThickness).toFloat()
                 )
 
                 rotate(
@@ -159,7 +162,7 @@ fun Preview() {
             .size(250.dp)
             .background(darkGray)
         ,
-        initialValue = 50,
+        initialValue = 30,
         primaryColor = orange,
         secondaryColor = gray,
         circleRadius = 230f,
@@ -168,11 +171,3 @@ fun Preview() {
         }
     )
 }
-
-
-
-
-
-
-
-
