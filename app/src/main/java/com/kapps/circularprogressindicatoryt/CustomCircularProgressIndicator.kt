@@ -50,6 +50,8 @@ fun CustomCircularProgressIndicator(
     var dragStartedAngle by remember { mutableStateOf(0f) }
     var oldPositionValue by remember { mutableStateOf(initialValue) }
 
+    val overFlowFactor = remember { 10 }
+
     Box(
         modifier = modifier
     ){
@@ -79,7 +81,20 @@ fun CustomCircularProgressIndicator(
                             val higherThreshold = currentAngle + (360f / (maxValue - minValue) * 5)
 
                             if (dragStartedAngle in lowerThreshold..higherThreshold) {
-                                positionValue = (oldPositionValue + (changeAngle / (360f / (maxValue - minValue))).roundToInt())
+                                val newValue =
+                                    (oldPositionValue + (changeAngle / (360f / (maxValue - minValue))).roundToInt())
+
+                                if (abs(newValue - positionValue) < overFlowFactor) {
+                                    positionValue = newValue
+                                } else {
+                                    if (positionValue in minValue..minValue + overFlowFactor && newValue in maxValue - overFlowFactor .. maxValue) {
+                                        positionValue = minValue
+                                    }
+
+                                    if (positionValue in maxValue - overFlowFactor .. maxValue && newValue in minValue..minValue + overFlowFactor ) {
+                                        positionValue = maxValue
+                                    }
+                                }
                             }
                         },
                         onDragEnd = {
